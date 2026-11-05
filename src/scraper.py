@@ -80,7 +80,7 @@ def write_json(data:dict):
 
 def main():
     talent_urls = []
-    talent_data = []
+    talent_data = {}
 
     print("Fetching https://hololive.hololivepro.com/en/talents ... ")
     soup = brew("https://hololive.hololivepro.com/en/talents")
@@ -91,7 +91,7 @@ def main():
     print("Talent Urls Successfully Retrieved")
 
     for talent_url in progress(talent_urls, desc="Parsing talent data...", ncols=100, unit="pages"):
-        talent_data.append(parse_talent_page(talent_url))
+        talent_data.update(parse_talent_page(talent_url))
     print("Successfully parsed all talent pages")
 
     print("Writing to file...")
