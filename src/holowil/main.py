@@ -17,13 +17,16 @@ class Talent:
         self.checked = False
 
 def get_api_key():
-    with open(cwd / "data/api_key.key", "r") as file:
-        key = file.read()
+    if Path(cwd / "data/api_key.key").exists():
+        with open(cwd / "data/api_key.key", "r") as file:
+            key = file.read()
 
-        if not key:
-            raise click.ClickException("No 'data/api_key.key' found, or the file is empty. Please create one in the current directory, or supply it with '--api-key=<your-api-key>'")
+            if not key:
+                raise click.ClickException("API key file is empty. Please run 'holowil --config-api-key=<your key>' or supply it with '--api-key=<your-api-key>'")
 
-        return key
+            return key  
+        
+    raise click.ClickException("API key file not found. Please run 'holowil --config-api-key=<your key>' or supply it with '--api-key=<your-api-key>'")
 
 def put_api_key(api_key:str):
     with open(cwd / "data/api_key.key", "w") as file:
