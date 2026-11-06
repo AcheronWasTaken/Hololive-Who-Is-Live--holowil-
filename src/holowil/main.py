@@ -7,6 +7,8 @@ from tqdm import tqdm as progress
 from tabulate import tabulate
 from termcolor import colored
 
+cwd = Path(__file__)
+
 class Talent:
     def __init__(self, name:str, channel_id:str):
         self.name = name
@@ -15,15 +17,23 @@ class Talent:
         self.checked = False
 
 def get_api_key():
-    with open("data/api_key.key", "r") as file:
-        return file.read()
+    with open(cwd / "data/api_key.key", "r") as file:
+        key = file.read()
 
+        if not key:
+            raise click.ClickException("No 'data/api_key.key' found, or the file is empty. Please create one in the current directory, or supply it with '--api-key=<your-api-key>'")
+
+        return key
+        
 def get_data() -> dict[str, dict]:
-    if Path("data/hololive.json").exists:
+    if Path(cwd / "data/hololive.json").exists():
         with open("data/hololive.json", "r") as file:
-            return json.load(file)
+            data = json.load(file)
 
-    print("Could not find data/hololive.json. Making json fike...")
+            if data:
+                return data
+
+    print("Could not find data/hololive.json. Making json file...")
     return make_json()
     
 def get_videos(api:str, channel_ids:list) -> list[dict]:
@@ -32,18 +42,25 @@ def get_videos(api:str, channel_ids:list) -> list[dict]:
 
     response = re.get("https://holodex.net/api/v2/users/live", params=payload, headers=headers)
 
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except Exception as e:
+        raise click.ClickException(f"Bad Response: {e}"[:70] + "...")
 
     return response.json()
 
 @click.command()
-def main():
-    api_key = get_api_key()
+@click.option("--api-key", default=None, help="Manually supply your own api key if you'd like to use a different one, or the file is not working.")
+def cli(api_key):
+    api_key = api_key or get_api_key()
     talents = get_data()
     channel_ids = []
     checked_talents = 0
 
     for channel_id in talents:
+        if "ERROR_FOR_" in channel_id:
+            continue
+
         talents[channel_id].update({
             "object": Talent(
                 name=talents[channel_id]["name"],
@@ -57,7 +74,7 @@ def main():
         channel_id = video.get("channel_id") or video.get("channel").get("id")
 
         if not channel_id:
-            raise Exception(f"Channel ID not found: {video}")
+            continue
 
         try:
             talent:Talent = talents[channel_id]["object"]
@@ -83,10 +100,10 @@ def main():
 
         table.append({"Name": talent.name, "Channel Id": talent.channel_id, "Status": colored("Live", "green") if talent.status else colored("Not Live", "red")})
 
-    print(tabulate(table))
+    print(tabulate(table, headers="keys"))
         
 if __name__ == "__main__":
-    main()
+    cli()
 
     
 

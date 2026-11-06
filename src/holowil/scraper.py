@@ -3,6 +3,9 @@ import json
 import requests as req
 import re
 from tqdm import tqdm as progress
+from pathlib import Path
+
+cwd = Path(__file__)
 
 def brew(url:str, raw:bool=False) -> BeautifulSoup|str:
     response = req.get(url)
@@ -67,7 +70,10 @@ def get_talent_name(url:str) -> str:
     return name
 
 def parse_talent_page(url:str) -> list[dict]:
-    page = brew(url)
+    try:
+        page = brew(url)
+    except Exception as e:
+        return {f"ERROR_FOR_{url}": "BAD_RESPONSE_PAGE"}
 
     name = get_talent_name(url)
     channel_id = get_channel_id(page)
@@ -75,7 +81,7 @@ def parse_talent_page(url:str) -> list[dict]:
     return {channel_id:{"name": name}}
 
 def write_json(data:dict):
-    with open("data/hololive.json", "w") as file:
+    with open(cwd / "data/hololive.json", "w") as file:
         json.dump(data, file, indent=4)
 
 def main():
