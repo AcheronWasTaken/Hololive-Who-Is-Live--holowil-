@@ -24,6 +24,10 @@ def get_api_key():
             raise click.ClickException("No 'data/api_key.key' found, or the file is empty. Please create one in the current directory, or supply it with '--api-key=<your-api-key>'")
 
         return key
+
+def put_api_key(api_key:str):
+    with open(cwd / "data/api_key.key", "w") as file:
+        file.write(api_key)
         
 def get_data() -> dict[str, dict]:
     if Path(cwd / "data/hololive.json").exists():
@@ -49,9 +53,17 @@ def get_videos(api:str, channel_ids:list) -> list[dict]:
 
     return response.json()
 
-@click.command()
+@click.command(name="holowil")
 @click.option("--api-key", default=None, help="Manually supply your own api key if you'd like to use a different one, or the file is not working.")
-def cli(api_key):
+@click.option("--config-api-key", default=None, help="Save your key to the api_key.key file for later usage")
+def cli(api_key:str, config_api_key:str):
+    """CLI tool to get data on which hololive talent is currently streaming (Who is live?)"""
+
+    if config_api_key:
+        put_api_key(config_api_key)
+        print("Successfully wrote key to data/api_key.key.")
+        return
+
     api_key = api_key or get_api_key()
     talents = get_data()
     channel_ids = []
