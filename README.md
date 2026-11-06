@@ -11,12 +11,6 @@ This project is a super simple tool that tells you which hololive member is curr
 - Uses tabulate and tqdm to pretty print output, including progress bars.
 
 ## Installation Guide
-1. Download the zip file in the releases section
-2. Extract the zip
-3. Run the exe :) (preferably via the cmd)
-
-Alternatively, you can also use pipx to install it as a CLI tool stored in your python directory:
-
 1. Download the `.whl` file in the releases section.
 2. Ensure you have `pipx` installed (globally) and that you have ran `pipx ensurepath` at least once. You can use `python -m pip install pipx` in a non-venv activated terminal to install it.
 3. Run `pipx install <path to your wheel file>`
