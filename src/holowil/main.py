@@ -1,13 +1,13 @@
 import requests as re
 import click
-from scraper import main as make_json
+from .scraper import main as make_json
 from pathlib import Path
 import json
 from tqdm import tqdm as progress
 from tabulate import tabulate
 from termcolor import colored
 
-cwd = Path(__file__)
+cwd = Path(__file__).parent
 
 class Talent:
     def __init__(self, name:str, channel_id:str):
@@ -27,7 +27,7 @@ def get_api_key():
         
 def get_data() -> dict[str, dict]:
     if Path(cwd / "data/hololive.json").exists():
-        with open("data/hololive.json", "r") as file:
+        with open(cwd / "data/hololive.json", "r") as file:
             data = json.load(file)
 
             if data:

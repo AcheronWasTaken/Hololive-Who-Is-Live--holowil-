@@ -3,8 +3,9 @@ requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "Holo-Who-Is-Live"
+name = "holowil"
 version = "2.0.0"
+description = "Simple CLI app to find out which hololive member is currently streaming (Who is live?)"
 dependencies = [
     "beautifulsoup4==4.15.0",
     "certifi==2026.10.23",
