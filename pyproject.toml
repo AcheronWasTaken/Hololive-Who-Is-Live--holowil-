@@ -22,5 +22,8 @@ dependencies = [
     "urllib3==2.8.0",
 ]
 
+[tool.flit.sdist]
+exclude = ["src/holowil/data/"]
+
 [project.scripts]
 holowil = "holowil.main:cli"

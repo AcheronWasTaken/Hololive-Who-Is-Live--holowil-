@@ -1,3 +1,5 @@
 *.key
 HTML
 __pycache__
+*.zip
+dist
