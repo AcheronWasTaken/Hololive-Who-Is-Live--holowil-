@@ -5,7 +5,7 @@ import re
 from tqdm import tqdm as progress
 from pathlib import Path
 
-cwd = Path(__file__)
+cwd = Path(__file__).parent
 
 def brew(url:str, raw:bool=False) -> BeautifulSoup|str:
     response = req.get(url)

@@ -29,6 +29,7 @@ def get_api_key():
     raise click.ClickException("API key file not found. Please run 'holowil --config-api-key=<your key>' or supply it with '--api-key=<your-api-key>'")
 
 def put_api_key(api_key:str):
+    Path(cwd / "data").mkdir(exist_ok=True)
     with open(cwd / "data/api_key.key", "w") as file:
         file.write(api_key)
         
